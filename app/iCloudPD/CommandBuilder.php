@@ -16,7 +16,7 @@ use App\iCloudPD\Options\Size;
 use App\iCloudPD\Options\SizeList;
 use Illuminate\Support\Facades\Config;
 
-class Builder implements iCloudPDClient
+class CommandBuilder implements iCloudPDClient
 {
     public const array PARAMETERS = [
         'directory' => '--directory',

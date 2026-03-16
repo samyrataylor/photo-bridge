@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('apple_cookie_path')->nullable();
             $table->string('immich_email')->nullable();
             $table->string('immich_api_key')->nullable();
+            $table->string('library_download_path')->nullable();
+            $table->string('albums_download_path')->nullable();
             $table->timestamp('last_successful_login')->nullable();
             $table->timestamps();
             $table->softDeletes();
