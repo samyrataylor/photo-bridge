@@ -4,6 +4,7 @@ namespace App\iCloudPD;
 
 use App\Models\Album;
 use App\Models\CloudUser;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Process;
 
@@ -52,12 +53,73 @@ class iCloudPD
         return null;
     }
 
+    public function getLibraryAssets(): ?int
+    {
+        $process = Process::start($this->builder()->directory(__DIR__)->dryRun()->build());
+
+        while ($process->running()) {
+            if (preg_match('/Downloading (\d*) original/', $process->latestOutput(), $matches)) {
+                $process->stop();
+
+                return (int) $matches[1];
+            }
+        }
+
+        return null;
+    }
+
     public function downloadAlbum(Album $album): ?int
     {
-        $output = Process::forever()->run($this->builder()->directory($album->downloadPath())->album($album->name)->build())->output();
+        $outfile = $this->logPath('download_album_'.$album->name.'_'.Carbon::now()->format('YmdHis').'.log');
 
-        preg_match('/Downloading (\d*) original/', $output, $matches);
+        $command = $this->builder()->directory($album->downloadPath())->album($album->name)->build();
 
-        return (int) $matches[1];
+        $process = Process::forever()->run($command, function (string $type, string $line) use ($outfile) {
+            file_put_contents($outfile, $line, FILE_APPEND);
+        });
+
+        if ($process->successful()) {
+            preg_match('/Downloading (\d*) original/', $process->output(), $matches);
+            unlink($outfile);
+
+            return (int) $matches[1];
+        }
+
+        return null;
+    }
+
+    public function downloadLibrary(): ?int
+    {
+        $outfile = $this->logPath('download_library_'.Carbon::now()->format('YmdHis').'.log');
+
+        $command = $this->builder()->directory($this->user->library_download_path)->build();
+
+        $process = Process::forever()->run($command, function (string $type, string $line) use ($outfile) {
+            file_put_contents($outfile, $line, FILE_APPEND);
+        });
+
+        if ($process->successful()) {
+            preg_match('/Downloading (\d*) original/', $process->output(), $matches);
+            unlink($outfile);
+
+            return (int) $matches[1];
+        }
+
+        return null;
+    }
+
+    protected function logPath(?string $filename = null): string
+    {
+        $path = storage_path(implode(DIRECTORY_SEPARATOR, [
+            'logs',
+            'cloudUser',
+            $this->user->id,
+        ]));
+
+        if (! file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        return empty($filename) ? $path : $path.DIRECTORY_SEPARATOR.$filename;
     }
 }

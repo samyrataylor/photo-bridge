@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Process;
 
 #[ObservedBy([CloudUserObserver::class])]
 class CloudUser extends Model
@@ -26,6 +25,8 @@ class CloudUser extends Model
         'immich_api_key',
         'library_download_path',
         'albums_download_path',
+        'fetched_assets',
+        'downloaded_assets',
     ];
 
     protected $hidden = [
@@ -64,24 +65,5 @@ class CloudUser extends Model
     public function iCloudPD(): iCloudPD
     {
         return new iCloudPD($this);
-    }
-
-    public function running()
-    {
-        $p = Process::forever()->start($this->iCloudPD()->builder()->directory(__DIR__)->dryRun()->build());
-
-        dump($p, $p->id());
-
-        $s = serialize($p);
-        dump($s);
-        usleep(100000);
-
-        $newp = unserialize($s);
-
-        dump($newp);
-
-        dump($newp == $p);
-
-        dump($newp->latestOutput());
     }
 }
