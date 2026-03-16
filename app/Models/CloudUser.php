@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\iCloudPD\iCloudPD;
+use App\Immich\Immich;
 use App\Observers\CloudUserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -65,5 +66,10 @@ class CloudUser extends Model
     public function iCloudPD(): iCloudPD
     {
         return new iCloudPD($this);
+    }
+
+    public function immich(): Immich
+    {
+        return new Immich($this);
     }
 }
