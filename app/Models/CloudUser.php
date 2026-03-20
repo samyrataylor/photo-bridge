@@ -32,7 +32,6 @@ class CloudUser extends Model
 
     protected $hidden = [
         'apple_password',
-        'immich_api_key',
     ];
 
     public function applePassword(): Attribute
