@@ -27,4 +27,11 @@ return [
         'domain' => Domain::Com,
         'mfaProvider' => MFAProvider::Console,
     ],
+
+    'exclude_albums' => [
+        'Recently Deleted',
+        'Live',
+        'Videos',
+        'Bursts',
+    ],
 ];

@@ -28,6 +28,7 @@ class CloudUser extends Model
         'albums_download_path',
         'fetched_assets',
         'downloaded_assets',
+        'exclude_albums',
     ];
 
     protected $hidden = [
@@ -54,6 +55,7 @@ class CloudUser extends Model
     {
         return [
             'last_successful_login' => 'timestamp',
+            'exclude_albums' => 'array',
         ];
     }
 

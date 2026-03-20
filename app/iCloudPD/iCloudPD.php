@@ -18,8 +18,10 @@ class iCloudPD
     {
         $output = explode(PHP_EOL, Process::run($this->builder()->listAlbums()->build())->output());
 
-        return collect($output)->filter(function (string $line) {
-            return ! empty($line) && ! preg_match('/^\d{4}-\d{2}-\d{2}/', $line) && $line !== 'Albums:';
+        $exclude = array_merge(config('icloudpd.exclude_albums', []), $this->user->exclude_albums);
+
+        return collect($output)->filter(function (string $line) use ($exclude) {
+            return ! empty($line) && ! preg_match('/^\d{4}-\d{2}-\d{2}/', $line) && $line !== 'Albums:' && ! in_array($line, $exclude);
         })->values();
     }
 
