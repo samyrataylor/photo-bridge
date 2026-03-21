@@ -29,5 +29,7 @@ class RefreshAlbumsCommand extends Command
                 $user->albums()->create(['name' => $album]);
             }
         }
+
+        $io->writeln($albums);
     }
 }
