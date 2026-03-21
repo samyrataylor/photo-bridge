@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Concerns;
+namespace App\FetchAlbumAssets;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Validation\Rules\Password;

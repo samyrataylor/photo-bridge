@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Concerns;
+namespace App\FetchAlbumAssets;
 
 use App\Models\User;
 use Illuminate\Validation\Rule;

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Actions\iCloudPD\FetchAssets;
 use App\Models\Album;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,9 +20,6 @@ class FetchAlbumAssetsJob implements ShouldQueue
 
     public function handle(): void
     {
-        if ($this->album->fetch) {
-            $assets = $this->album->cloudUser->iCloudPD()->getAlbumAssets($this->album);
-            $this->album->update(['fetched_assets' => $assets]);
-        }
+        new FetchAssets()->album($this->album);
     }
 }
