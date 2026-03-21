@@ -50,7 +50,11 @@ class AlbumAssetCountCommand extends Command
         }
 
         if (is_null($fetched) && is_null($imported) && is_null($downloaded)) {
-            $io->writeln($album->fetched_assets ?? '');
+            $io->writeln([
+                'Fetched: '.$album->fetched_assets,
+                'Downloaded: '.$album->downloaded_assets,
+                'Imported: '.$album->imported_assets,
+            ]);
 
             return;
         }
