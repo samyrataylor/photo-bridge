@@ -9,7 +9,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AlbumAssetCountCommand extends Command
 {
-    protected $signature = 'album:asset-count {name} {album} {--fetch} {--clear} {--downloaded=} {--fetched=} {--imported=}';
+    protected $signature = 'album:asset-count {name} {album} {--json} {--fetch} {--clear} {--downloaded=} {--fetched=} {--imported=}';
 
     public function handle(): void
     {
@@ -50,11 +50,21 @@ class AlbumAssetCountCommand extends Command
         }
 
         if (is_null($fetched) && is_null($imported) && is_null($downloaded)) {
-            $io->writeln([
-                'Fetched: '.$album->fetched_assets,
-                'Downloaded: '.$album->downloaded_assets,
-                'Imported: '.$album->imported_assets,
-            ]);
+            $lines = [
+                'fetched' => $album->fetched_assets,
+                'downloaded' => $album->downloaded_assets,
+                'imported' => $album->imported_assets,
+            ];
+
+            if ($this->option('json')) {
+                $io->writeln(json_encode($lines));
+
+                return;
+            }
+
+            foreach ($lines as $key => $value) {
+                $io->writeln($key.':'.$value);
+            }
 
             return;
         }
